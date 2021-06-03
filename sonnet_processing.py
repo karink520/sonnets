@@ -2,7 +2,6 @@ import re
 import pandas as pd
 import numpy as np
 import cmudict
-from sklearn.feature_extraction import DictVectorizer
 
 def read_sonnet_file(filename, author, sonnets_list, curr_sonnet_idx):
     """Opens a txt file of all sonnets, reads it, adds them to a list of sonnets
@@ -111,6 +110,7 @@ def get_sonnet_phoneme_dict(processed_sonnet, cmu_dictionary, all_phonemes, with
 
 
 def get_cmu_simvecs_embedding():
+    """Returns a dictionary mapping words to vector embeddings"""
     embedding = dict()
     for line in open("cmudict-0.7b-simvecs.txt", encoding="latin1"):
         word, vals_raw = line.split("  ")
@@ -145,6 +145,12 @@ def create_cmu_mean_simvecs_embedding_df(preprocessed_sonnets_list):
     
 
 def create_phoneme_embedding_df(preprocessed_sonnets_list, with_lexical_stress):
+    """
+    Get counts of phonemes in each preprocessed sonnet, calculate TF-IDF for
+    phoneme counts, and return a dataframe with those normalized counts as columns,
+    an array with the same data, and a vector of words that were in the sonnet 
+    but not in the dictionary
+    """
 
     cmu_dictionary = cmudict.dict() # Compatible with NLTK
 
@@ -163,17 +169,18 @@ def create_phoneme_embedding_df(preprocessed_sonnets_list, with_lexical_stress):
         all_sonnets_phoneme_dicts.append(sonnet_phoneme_dict)
         all_words_not_in_dict.extend(words_not_in_dict)
 
-    vectorizer = DictVectorizer(sparse=False)
-    phoneme_count_mtx = vectorizer.fit_transform(all_sonnets_phoneme_dicts)
+    df = pd.DataFrame.from_records(all_sonnets_phoneme_dicts)
 
     # calculate TF-IDF for phoneme counts
+    phoneme_count_mtx = np.array(df)
     normalized_phoneme_count_mtx = phoneme_count_mtx / phoneme_count_mtx.sum(axis=0)
 
     # drop those where all elts are na (i.e. no counts were observed for that phoneme)
     phoneme_names = np.array(list(sonnet_phoneme_dict.keys()))
+    phoneme_names = df.columns
     phoneme_names_trimmed = phoneme_names[~np.all(np.isnan(normalized_phoneme_count_mtx), axis=0)]
     normalized_phoneme_count_mtx = normalized_phoneme_count_mtx[:,~np.all(np.isnan(normalized_phoneme_count_mtx), axis=0)]
 
-    df_counts = pd.DataFrame(normalized_phoneme_count_mtx, columns = phoneme_names_trimmed)
-    
-    return df_counts, normalized_phoneme_count_mtx, all_words_not_in_dict
+    df_normalized_counts = pd.DataFrame(normalized_phoneme_count_mtx, columns = phoneme_names_trimmed)
+
+    return df_normalized_counts, normalized_phoneme_count_mtx, all_words_not_in_dict
