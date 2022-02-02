@@ -83,6 +83,17 @@ def preprocess_sonnet(sonnet):
     sonnet = sonnet.replace("didst", "did est")
     sonnet = sonnet.replace("o'er", "or")
     
+    #if desired, also replace:
+    sonnet = sonnet.replace("beauteous", "beauty us")
+    sonnet = sonnet.replace("stol'n", "stolen")
+    sonnet = sonnet.replace("virtue's", "virtues")
+    sonnet = sonnet.replace("vouchsafe", "vouch safe")
+    sonnet = sonnet.replace("therewith", "there with")
+    sonnet = sonnet.replace("wherewith", "where with")
+    sonnet = sonnet.replace("methinks", "me thinks")
+    sonnet = sonnet.replace("wherefore", "where fore")
+
+
     #sonnet = sonnet.replace("'s",  "s")
     
     return sonnet
