@@ -5,6 +5,7 @@ import seaborn as sns
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 from matplotlib import pyplot as plt
+import mplcursors
 
 st.title("Sonnet subsets")
 
@@ -23,6 +24,7 @@ subset_name = st.radio(
      "Subset to highlight",
     ("None","Marriage", "Dark Lady", "Rival Poet", "Love Triangle"))
 
+cursor = mplcursors.cursor(sc, hover=True)
 
 # Subsets of interest
 marriage = np.arange(0,17) #1-17
