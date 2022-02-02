@@ -5,7 +5,8 @@ import seaborn as sns
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 from matplotlib import pyplot as plt
-import mplcursors
+import plotly.express as px
+
 
 st.title("Sonnet subsets")
 
@@ -24,7 +25,6 @@ subset_name = st.radio(
      "Subset to highlight",
     ("None","Marriage", "Dark Lady", "Rival Poet", "Love Triangle"))
 
-cursor = mplcursors.cursor(sc, hover=True)
 
 # Subsets of interest
 marriage = np.arange(0,17) #1-17
@@ -58,5 +58,8 @@ plt.xlabel("PC 1")
 plt.ylabel("PC 2")
 plt.axis("off")
 plt.title(f'{vector}')
-#plt.show()
 st.pyplot(fig)
+
+#fig = px.scatter(sonnets_embedded_pca[0:154,0],y=sonnets_embedded_pca[0:154,1])
+#px.scatter(x = sonnets_embedded_pca[subset,0], y=sonnets_embedded_pca[subset,1],label=subset_name)
+#st.plotly_chart(fig)
