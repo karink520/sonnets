@@ -46,8 +46,7 @@ else:
     subset = []
     
 fig, ax = plt.subplots()
-X = df.iloc[:,:-1].copy()
-X = X.loc[0:154,:]
+X = df.iloc[0:154,:-1]
 X = StandardScaler().fit_transform(X)
 pca =  PCA(n_components=2).fit(X)
 sonnets_embedded_pca = pca.transform(X)
