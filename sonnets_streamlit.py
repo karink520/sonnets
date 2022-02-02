@@ -25,6 +25,7 @@ subset_name = st.radio(
      "Subset to highlight",
     ("None","Marriage", "Dark Lady", "Rival Poet", "Love Triangle"))
 
+show_numbers = st.checkbox("Show all sonnet numbers")
 
 # Subsets of interest
 marriage = np.arange(0,17) #1-17
@@ -54,6 +55,18 @@ pca =  PCA(n_components=2).fit(X)
 sonnets_embedded_pca = pca.transform(X)
 sns.scatterplot(x = sonnets_embedded_pca[0:154,0],y=sonnets_embedded_pca[0:154,1],alpha=0.5,ax=ax)
 sns.scatterplot(x = sonnets_embedded_pca[subset,0], y=sonnets_embedded_pca[subset,1],label=subset_name,ax=ax)
+
+if show_numbers:
+    for sonnet_num in range(0,154):
+        x = sonnets_embedded_pca[sonnet_num,0]
+        y = sonnets_embedded_pca[sonnet_num,1]
+        plt.annotate(sonnet_num + 1, (x,y), fontsize=6)
+
+for sonnet_num in subset:
+    x = sonnets_embedded_pca[sonnet_num,0]
+    y = sonnets_embedded_pca[sonnet_num,1]
+    plt.annotate(sonnet_num + 1, (x,y), fontsize=6)
+
 plt.xlabel("PC 1")
 plt.ylabel("PC 2")
 plt.axis("off")
